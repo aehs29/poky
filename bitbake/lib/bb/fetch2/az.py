@@ -37,8 +37,16 @@ class Az(Wget):
         az_sas = d.getVar('AZ_SAS')
         if az_sas and az_sas not in ud.url:
             ud.url += az_sas
+        # Checkstatus a maximum of 5 times, we know if may fail 
+        retries = 1
+        while retries > 0:
+            ret = Wget.checkstatus(self, fetch, ud, d, True)
+            if ret:
+                return ret
+            retries -= 1
+            bb.warn("CHECKFAILED Retries remaining %s" % retries)
+        return False
 
-        return Wget.checkstatus(self, fetch, ud, d, try_again)
 
     # Override download method, include retries
     def download(self, ud, d, retries=3):
@@ -78,7 +86,7 @@ class Az(Wget):
             # Azure fails on handshake sometimes when using wget, producing a
             # FetchError from the fetcher, retry if thats the case
             if 'Unable to establish SSL connection' in str(e):
-                bb.warn('Unable to establish SSL connection: Retries remaining: %s, Retrying...' % retries)
+                logger.debug2('Unable to establish SSL connection: Retries remaining: %s, Retrying...' % retries)
                 self.download(ud, d, retries-1)
 
         # Sanity check since wget can pretend it succeed when it didn't
