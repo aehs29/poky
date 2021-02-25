@@ -78,7 +78,7 @@ class Az(Wget):
             # Azure fails on handshake sometimes when using wget, producing a
             # FetchError from the fetcher, retry if thats the case
             if 'Unable to establish SSL connection' in str(e):
-                logger.debug2('Unable to establish SSL connection: Retries remaining: %s, Retrying...' % retries)
+                bb.warn('Unable to establish SSL connection: Retries remaining: %s, Retrying...' % retries)
                 self.download(ud, d, retries-1)
 
         # Sanity check since wget can pretend it succeed when it didn't

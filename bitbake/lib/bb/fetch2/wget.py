@@ -326,19 +326,23 @@ class Wget(FetchMethod):
                 pass
         except urllib.error.URLError as e:
             if try_again:
-                logger.debug2("checkstatus: trying again")
-                return self.checkstatus(fetch, ud, d, False)
+                if 'exist' not in str(e):
+                    logger.debug2("URLERROR checkstatus: trying again %s" % uri)
+                    return self.checkstatus(fetch, ud, d, False)
+                else:
+                    return False
             else:
-                # debug for now to avoid spamming the logs in e.g. remote sstate searches
-                logger.debug2("checkstatus() urlopen failed: %s" % e)
+                if 'exist' not in str(e):
+                    # debug for now to avoid spamming the logs in e.g. remote sstate searches
+                    logger.debug2("URLERROR checkstatus() urlopen failed: %s:%s" % (e, uri))
                 return False
         except ConnectionResetError as e:
             if try_again:
-                logger.debug2("checkstatus: trying again")
+                logger.debug2(" CONNRESETcheckstatus: trying again %s " % uri)
                 return self.checkstatus(fetch, ud, d, False)
             else:
                 # debug for now to avoid spamming the logs in e.g. remote sstate searches
-                logger.debug2("checkstatus() urlopen failed: %s" % e)
+                logger.debug2("CONNRESET checkstatus() urlopen failed: %s: %s" % (e, uri))
                 return False
         return True
 
