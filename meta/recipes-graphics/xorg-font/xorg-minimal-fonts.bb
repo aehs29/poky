@@ -14,6 +14,8 @@ SOURCE_DATE_EPOCH = "1613559011"
 
 PE = "1"
 PR = "r3"
+# remove at next version upgrade or when output changes
+HASHEQUIV_HASH_VERSION .= ".1"
 
 inherit allarch features_check
 

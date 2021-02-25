@@ -10,6 +10,9 @@ LICENSE = "OFL-1.1"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=f96db970a9a46c5369142b99f530366b"
 PE = "1"
 
+# remove at next version upgrade or when output changes
+HASHEQUIV_HASH_VERSION .= ".1"
+
 inherit allarch fontcache
 
 FONT_PACKAGES = "${PN}"
