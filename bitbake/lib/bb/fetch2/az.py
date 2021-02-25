@@ -78,8 +78,8 @@ class Az(Wget):
             # Azure fails on handshake sometimes when using wget after some stress, producing a
             # FetchError from the fetcher, if the artifact exists retyring should succeed
             if 'Unable to establish SSL connection' in str(e):
-                logger.debug2('Unable to establish SSL connection: Retries remaining: %s, Retrying...' % retries)
-                self.download(ud, d, retries -1)
+                bb.warn('Unable to establish SSL connection: Retries remaining: %s, Retrying...' % retries)
+                self.download(ud, d, retries-1)
 
         # Sanity check since wget can pretend it succeed when it didn't
         # Also, this used to happen if sourceforge sent us to the mirror page
