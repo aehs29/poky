@@ -38,6 +38,18 @@ class Az(Wget):
         if az_sas and az_sas not in ud.url:
             ud.url += az_sas
 
+        # Checkstatus retry, we know if may fail at least twice
+        # Trap the code here, otherwise checkstatus from wget will call itself
+        # only once more
+        retries = 1
+        while retries > 0:
+            ret = Wget.checkstatus(self, fetch, ud, d, True)
+            if ret:
+                return ret
+            retries -= 1
+            bb.warn("CHECKFAILED Retries remaining %s" % retries)
+        return False
+
         return Wget.checkstatus(self, fetch, ud, d, try_again)
 
     # Override download method, include retries
