@@ -29,7 +29,7 @@ class Az(Wget):
         return ud.type in ['az']
 
 
-    def checkstatus(self, fetch, ud, d, try_again=True):
+    def checkstatus(self, fetch, ud, d, try_again=True, retries=1):
 
         # checkstatus discards parameters either way, we need to do this before adding the SAS
         ud.url = ud.url.replace('az://','https://').split(';')[0]
@@ -41,16 +41,13 @@ class Az(Wget):
         # Checkstatus retry, we know if may fail at least twice
         # Trap the code here, otherwise checkstatus from wget will call itself
         # only once more
-        retries = 1
         while retries > 0:
-            ret = Wget.checkstatus(self, fetch, ud, d, True)
+            ret = Wget.checkstatus(self, fetch, ud, d, False)
             if ret:
                 return ret
             retries -= 1
             bb.warn("CHECKFAILED Retries remaining %s" % retries)
         return False
-
-        return Wget.checkstatus(self, fetch, ud, d, try_again)
 
     # Override download method, include retries
     def download(self, ud, d, retries=3):
