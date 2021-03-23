@@ -1733,7 +1733,7 @@ class Fetch(object):
                             raise
                         else:
                             logger.warning('Failed to fetch URL %s, attempting MIRRORS if available' % u)
-                            logger.debug(1, str(e))
+                            logger.warn(str(e))
                         firsterr = e
                         # Remove any incomplete fetch
                         if not verified_stamp:
