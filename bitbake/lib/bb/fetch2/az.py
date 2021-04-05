@@ -29,7 +29,7 @@ class Az(Wget):
         return ud.type in ['az']
 
 
-    def checkstatus(self, fetch, ud, d, try_again=True, retries=3):
+    def checkstatus(self, fetch, ud, d, try_again=True, retries=5):
 
         # checkstatus discards parameters either way, we need to do this before adding the SAS
         ud.url = ud.url.replace('az://','https://').split(';')[0]
