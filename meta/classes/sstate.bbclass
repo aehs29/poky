@@ -743,6 +743,8 @@ def pstaging_fetch(sstatefetch, d):
     for srcuri in uris:
         localdata.setVar('SRC_URI', srcuri)
         try:
+            if 'qemu' in srcuri:
+                bb.warn(str(srcuri))
             fetcher = bb.fetch2.Fetch([srcuri], localdata, cache=False)
             fetcher.checkstatus()
             fetcher.download()
@@ -855,7 +857,25 @@ python sstate_report_unihash() {
 sstate_unpack_package () {
         echo "Trying to extract:"
         echo "${SSTATE_PKG}"
-	tar -xvzf ${SSTATE_PKG}
+        ls -l  "${SSTATE_PKG}"
+        echo "md5sum:"
+        md5sum "${SSTATE_PKG}"
+        echo "Checking fetch task:"
+        # echo "Does ~/poky/build/tmp/work/x86_64-linux/qemu-native/6.0.0-r0/temp/log.do_popluate_sysroot_setscene exist?"
+
+        # if [ -e ~/poky/build/tmp/work/x86_64-linux/qemu-native/6.0.0-r0/temp/ ]; then
+        #     ls -l ~/poky/build/tmp/work/x86_64-linux/qemu-native/6.0.0-r0/temp/
+        #     echo "Catting log"
+        #     cat ~/poky/build/tmp/work/x86_64-linux/qemu-native/6.0.0-r0/temp/log.do_populate_sysroot_setscene
+        # elif [ -e ~/poky/build/tmp-*-baremetal/work/x86_64-linux/qemu-native/6.0.0-r0/temp/ ]; then
+        #     ls -l ~/poky/build/tmp-*-baremetal/work/x86_64-linux/qemu-native/6.0.0-r0/temp/
+        #     echo "Catting log"
+        #     cat ~/poky/build/tmp-*-baremetal/work/x86_64-linux/qemu-native/6.0.0-r0/temp/log.do_populate_sysroot_setscene
+        # fi
+        # echo "FIle contents:"
+        # tar -tvzf ${SSTATE_PKG}
+        echo "Extracting..."
+        tar -xvzf ${SSTATE_PKG}
         echo "Done extracting"
 	# update .siginfo atime on local/NFS mirror
 	[ -O ${SSTATE_PKG}.siginfo ] && [ -w ${SSTATE_PKG}.siginfo ] && [ -h ${SSTATE_PKG}.siginfo ] && touch -a ${SSTATE_PKG}.siginfo
